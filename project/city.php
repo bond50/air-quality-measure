@@ -6,6 +6,8 @@ if (!empty($_GET['city'])) {
 }
 
 $fileName = null;
+$cityInformation=[];
+
 if (!empty($city)) {
     $cities = json_decode(
         file_get_contents(
@@ -16,10 +18,12 @@ if (!empty($city)) {
     foreach ($cities as $curentCity) {
         if ($curentCity['city'] == $city) {
             $fileName = $curentCity['filename'];
+            $cityInformation = $curentCity;
             break;
         }
     }
 }
+
 $stats = [];
 if (!empty($fileName)) {
     $results = json_decode(
@@ -67,6 +71,7 @@ if (!empty($fileName)) {
 <?php if (empty($city)) : ?>
     <p>The city could not be loaded</p>
 <?php else: ?>
+<h1><?= e($cityInformation['city'])?> <?= e($cityInformation['flag'])?></h1>
     <?php if (!empty($stats)) : ?>
         <table>
             <thead>
@@ -80,10 +85,14 @@ if (!empty($fileName)) {
             <?php foreach ($stats as $month => $measurements) : ?>
                 <tr>
                     <th><?= e($month) ?></th>
-                    <td><?= e(round(array_sum($measurements['pm25']) / count($measurements['pm25']), 2)) ?>
-                    <?= e($units['pm25'])?></td>
-                    <td><?= e(round(array_sum($measurements['pm10']) / count($measurements['pm10']), 2)) ?>
-                    <?= e($units['pm10'])?></td>
+                    <td>
+                        <?= e(round(array_sum($measurements['pm25']) / count($measurements['pm25']), 2)) ?>
+                        <?= e($units['pm25']) ?>
+                    </td>
+                    <td>
+                        <?= e(round(array_sum($measurements['pm10']) / count($measurements['pm10']), 2)) ?>
+                        <?= e($units['pm10']) ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
