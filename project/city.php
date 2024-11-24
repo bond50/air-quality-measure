@@ -6,7 +6,7 @@ if (!empty($_GET['city'])) {
 }
 
 $fileName = null;
-$cityInformation=[];
+$cityInformation = [];
 
 if (!empty($city)) {
     $cities = json_decode(
@@ -71,8 +71,41 @@ if (!empty($fileName)) {
 <?php if (empty($city)) : ?>
     <p>The city could not be loaded</p>
 <?php else: ?>
-<h1><?= e($cityInformation['city'])?> <?= e($cityInformation['flag'])?></h1>
+    <h1><?= e($cityInformation['city']) ?> <?= e($cityInformation['flag']) ?></h1>
     <?php if (!empty($stats)) : ?>
+        <canvas id="aqi-chart" style="width: 300px; height: 200px;"></canvas>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const data = {
+                    labels: ['Label 01','Label 02','Label 03','Label 04','Label 05','Label 06','Label 07'],
+                    datasets: [{
+                        label: 'My First Dataset',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                };
+
+                const ctx = document.getElementById('aqi-chart')
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        onClick: (e) => {
+                            const canvasPosition = getRelativePosition(e, chart);
+
+                            // Substitute the appropriate scale IDs
+                            const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+                            const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+                        }
+                    }
+                });
+            })
+
+        </script>
+
         <table>
             <thead>
             <tr>
